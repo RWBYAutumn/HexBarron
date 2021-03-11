@@ -15,7 +15,7 @@ class BaronPiece extends Piece {
         super(player1);
         pieceType = "B";
         vPValue = 10;
-        connectionsToDestroy = 3;
+        connectionsToDestroy = 3;   //Task 9 changing the ammount of edge cases
     }
 
     @Override

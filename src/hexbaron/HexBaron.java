@@ -50,10 +50,15 @@ public class HexBaron {
             BufferedReader in = new BufferedReader(new FileReader(fileName));
             lineFromFile = in.readLine();
             items = Arrays.asList(lineFromFile.split(","));
-            player1.setUpPlayer(items.get(0), Integer.parseInt(items.get(1)), Integer.parseInt(items.get(2)), Integer.parseInt(items.get(3)), Integer.parseInt(items.get(4)));
+            
+            //Task 11 - added the chances variable 
+            
+            player1.setUpPlayer(items.get(0), Integer.parseInt(items.get(1)), Integer.parseInt(items.get(2)), Integer.parseInt(items.get(3)), Integer.parseInt(items.get(4)), Integer.parseInt(items.get(5)));
             lineFromFile = in.readLine();
             items = Arrays.asList(lineFromFile.split(","));
-            player2.setUpPlayer(items.get(0), Integer.parseInt(items.get(1)), Integer.parseInt(items.get(2)), Integer.parseInt(items.get(3)), Integer.parseInt(items.get(4)));
+            player2.setUpPlayer(items.get(0), Integer.parseInt(items.get(1)), Integer.parseInt(items.get(2)), Integer.parseInt(items.get(3)), Integer.parseInt(items.get(4)), Integer.parseInt(items.get(5)));
+            
+            // 11 11 11
             int gridSize = Integer.parseInt(in.readLine());
             grid = new HexGrid(gridSize);
             List<String> t = Arrays.asList(in.readLine().split(","));
@@ -85,8 +90,8 @@ public class HexBaron {
         System.out.println("Enter playerTwo name ?");
         String name2 = Console.readLine();
 
-        player1.setUpPlayer(name1, 0, 10, 10, 5);
-        player2.setUpPlayer(name2, 0, 10, 10, 5);
+        player1.setUpPlayer(name1, 0, 10, 10, 5, 3);
+        player2.setUpPlayer(name2, 0, 10, 10, 5,3);
         grid.setUpGridTerrain(t);
 //        grid.addPiece(true, "Serf", 24);
 //        grid.addPiece(true, "Serf", 5);
@@ -178,12 +183,33 @@ public class HexBaron {
 
         return false;
     }
-    
-    
-    
-    
-    
+
     //888888888888888888888888888888888888888
+    
+    //Task 10
+    boolean checkSalvageCommandFormat(List<String> items){
+    
+      if(items.size() == 2){
+
+            try {
+                     
+                int result = Integer.parseInt(items.get(1));
+                return true;
+
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        return false;
+    }
+    //100000000000000000000000000000000000000000000000000000000
+    
+    
+    
+    
+    
+    
     
     
 
@@ -208,6 +234,9 @@ public class HexBaron {
                     
                 case "downgrade":                                    //Task 8
                     return checkDowngradeCommandFormat(items);
+                    
+                case "salvage":                                     //task 10
+                    return checkSalvageCommandFormat(items);
             }
         }
         return false;
@@ -279,13 +308,50 @@ public class HexBaron {
             }
 
             //---------------------------------------------------------
-            for (String c : commands) {
+            for (int count = 0; count < 3; count++) {
 
-                List<String> items = Arrays.asList(c.split(" "));
+                List<String> items = Arrays.asList(commands.get(count).split(" "));
                 validCommand = checkCommandIsValid(items);
 
+                
+                OUTER:
+                
                 if (!validCommand) {
-                    Console.writeLine("Invalid command");
+                    Console.writeLine("Command "+ (count+1)+": Is an invalid command");
+
+                    //task 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 
+
+                    if(player1Turn && player1.Chances > 0){
+                        Console.write("Reenter command number "+(1+count)+": ");
+
+                        String stringCommand = Console.readLine();
+                        strip(stringCommand);
+
+                        commands.remove(count);
+                        commands.add(count, stringCommand);
+
+                        player1.removeChance();
+
+                        Console.write("you have " + player1.Chances + " chances left");
+                        System.out.println("");
+                    }else if (!player1Turn && player2.Chances > 0){
+                        Console.write("Reenter command number "+(1+count)+": ");
+
+                        String stringCommand = Console.readLine();
+                        strip(stringCommand);
+
+                        commands.remove(count);
+                        commands.add(count, stringCommand);
+
+                        player2.removeChance();
+
+                        Console.write("you have " + player2.Chances + " chances left");
+                        System.out.println("");
+                    }
+
+                    count--;
+                    //11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11
+                  
                 } else {
                     int fuelChange = 0;
                     int lumberChange = 0;
@@ -305,6 +371,39 @@ public class HexBaron {
                         if (supplyChange == 1) {
                             player1.removeTileFromSupply();
                         }
+                        
+                           
+                         //Task 10
+                        
+                        if(supplyChange == -1){
+                        player1.AddPiecesInSupply(1);
+                        }
+                        //1000000000000000000000000000000000
+
+                        
+                        
+                        //Task 11 
+                        
+                        if(!summaryOfResult.equals("Command execeuted") && player1.Chances > 0){
+                           Console.write("Enter command number " +(1 + count) + ": ");
+                        
+                            String stringCommand = Console.readLine();
+                            strip(stringCommand);
+                        
+                            commands.remove(count);
+                            commands.add(count, stringCommand);
+                      
+                      
+                            player1.removeChance();
+                            
+                            System.out.println("you have " + player1.Chances + " chances left" );
+                            
+                            count--;
+                            
+                            break OUTER;
+                         }
+//  11 11 11 11 11 11 11 11 11 11 11 
+                        
                     } else {
                         returnObjects = grid.executeCommand(items, fuelChange, lumberChange, supplyChange,
                                 player2.getFuel(), player2.getLumber(),
@@ -318,9 +417,50 @@ public class HexBaron {
                         if (supplyChange == 1) {
                             player2.removeTileFromSupply();
                         }
+                        
+                         
+                        //Task 10
+                        
+                        if(supplyChange == -1){
+                        player2.AddPiecesInSupply(1);
+                        }
+                        
+                        //1000000000000000000000000000000000
+                        
+                        
+                        
+                        
+                        //Task 11
+                         if(!summaryOfResult.equals("Command execeuted")  && player2.Chances > 0){
+                           
+                             Console.writeLine(summaryOfResult);
+                             
+                             Console.write("Enter command number " +(1 + count) + ": ");
+                        
+                            String stringCommand = Console.readLine();
+                            strip(stringCommand);
+                        
+                            commands.remove(count);
+                            commands.add(count, stringCommand);
+                      
+                      
+                            player2.removeChance();
+                            
+                            System.out.println("you have " + player2.Chances + " chances left" );
+                            
+                            count--;
+                            
+                            break OUTER;
+                         }
+                            
+                    
                     }
                     Console.writeLine(summaryOfResult);
+                    
+                 
+                    
                 }
+                
             }
 
             //---------------------------------------------------------

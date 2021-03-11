@@ -95,18 +95,32 @@ public class HexGrid {
             case "downgrade":
                 lumberCost = executeDowngradeCommand(items, lumberAvailable);
                 if (lumberCost < 0) {
-                    return new Object[]{"Downpgrade not possible", fuelChange, lumberChange, supplyChange};
+                    return new Object[]{"Downgrade not possible", fuelChange, lumberChange, supplyChange};
                 }
                  lumberChange = lumberCost;
                  break;
-                
-                
-                
-                
-                
-                
-                
                 //88888888888888888888888888888888
+                 
+            //Task 9 
+            case "salvage": 
+                lumberCost = executeSalavageCommand(items);
+                if (lumberCost < 0) {
+                    return new Object[]{"Salvage not possible", fuelChange, lumberChange, supplyChange};
+                }
+                   supplyChange = -1;
+                 lumberChange = lumberCost;
+                 break;
+                
+              
+                
+                //999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
+                 
+                 
+                 
+                 
+                 
+                 
+                 
         }
         return new Object[]{"Command executed", fuelChange, lumberChange, supplyChange};
     }
@@ -126,6 +140,50 @@ public class HexGrid {
         }
         return false;
     }
+    
+    //Task 9 
+    
+    private int executeSalavageCommand(List<String> items){
+        
+     int tileToUse = 0;
+        try{
+        tileToUse = Integer.parseInt(items.get(1));             //changed to fix 
+        
+        }catch(Exception e){
+        return -1;
+        }
+        
+        if (!checkPieceAndTileAreValid(tileToUse) 
+                || tiles.get(tileToUse).getPieceInTile().pieceType.equals("B") 
+              ) {
+            return -1;
+        }else{
+         Piece thePiece = tiles.get(tileToUse).getPieceInTile();
+            
+         if (thePiece.getPieceType().toUpperCase().equals("B") || thePiece.belongsToplayer1 != player1Turn) {
+                return -1;
+            }
+         
+            
+         
+         
+         
+            thePiece.destroyPiece();
+            pieces.remove(thePiece);
+            tiles.get(tileToUse).setPiece(null);
+            
+             return 5;
+        }
+        
+    }
+
+    
+    
+    
+    
+    
+    
+    
     
     //Task 8 - making new downgrade command 
     
@@ -157,6 +215,8 @@ public class HexGrid {
         }
         
     }
+    
+    //88888888888888888888888888888888888888888888888888
     
     
     

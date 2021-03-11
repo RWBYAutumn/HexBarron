@@ -11,23 +11,25 @@ package hexbaron;
  */
 public class Player {
 
-    protected int piecesInSupply, fuel, vPs, lumber;
+    protected int piecesInSupply, fuel, vPs, lumber, Chances;  //Task 11 - added the chances variable 
     protected String name;
     
     
     public Player() {
     }
 
-    public void setUpPlayer(String n, int v, int f, int l, int t) {
+    public void setUpPlayer(String n, int v, int f, int l, int t, int c) {
         name = n;
         vPs = v;
         fuel = f;
         lumber = l;
         piecesInSupply = t;
+        Chances = c;
+        
     }
 
     public String getStateString() {
-        return "VPs: " + vPs + "   Pieces in supply: " + piecesInSupply + "   Lumber: " + lumber + "   Fuel: " + fuel;
+        return "VPs: " + vPs + "   Pieces in supply: " + piecesInSupply + "   Lumber: " + lumber + "   Fuel: " + fuel + "   Chances: " + Chances;  //Task 11 - added the chances variable 
     }
 
     public int getVPs() {
@@ -69,4 +71,23 @@ public class Player {
     public void removeTileFromSupply() {
         piecesInSupply -= 1;
     }
+    
+
+// task 11 removing chances 
+    
+    public void removeChance(){
+         Chances --;
+    }
+    
+    public int deductChances(){
+        return Chances;
+    }
+    
+    public void resetChance(){
+    Chances = 3;
+    }
+    
+    
+    
+    // 11 11 11 11 11 11 11 11
 }
