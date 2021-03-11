@@ -50,14 +50,13 @@ public class HexBaron {
             BufferedReader in = new BufferedReader(new FileReader(fileName));
             lineFromFile = in.readLine();
             items = Arrays.asList(lineFromFile.split(","));
-            
+
             //Task 11 - added the chances variable 
-            
             player1.setUpPlayer(items.get(0), Integer.parseInt(items.get(1)), Integer.parseInt(items.get(2)), Integer.parseInt(items.get(3)), Integer.parseInt(items.get(4)), Integer.parseInt(items.get(5)));
             lineFromFile = in.readLine();
             items = Arrays.asList(lineFromFile.split(","));
             player2.setUpPlayer(items.get(0), Integer.parseInt(items.get(1)), Integer.parseInt(items.get(2)), Integer.parseInt(items.get(3)), Integer.parseInt(items.get(4)), Integer.parseInt(items.get(5)));
-            
+
             // 11 11 11
             int gridSize = Integer.parseInt(in.readLine());
             grid = new HexGrid(gridSize);
@@ -91,14 +90,8 @@ public class HexBaron {
         String name2 = Console.readLine();
 
         player1.setUpPlayer(name1, 0, 10, 10, 5, 3);
-        player2.setUpPlayer(name2, 0, 10, 10, 5,3);
+        player2.setUpPlayer(name2, 0, 10, 10, 5, 3);
         grid.setUpGridTerrain(t);
-//        grid.addPiece(true, "Serf", 24);
-//        grid.addPiece(true, "Serf", 5);
-//        grid.addPiece(true, "Serf", 2);
-//        grid.addPiece(true, "Serf", 3);
-        
-          grid.addPiece(true, "Serf", 16);
 
         grid.addPiece(true, "Baron", 0);
         grid.addPiece(true, "Serf", 8);
@@ -161,21 +154,17 @@ public class HexBaron {
 
         return true;
     }
-    
+
     //Task 8 create a downgrade command to serif
-    
-    boolean checkDowngradeCommandFormat(List<String> items){
-    
-     
-      if(items.size() == 2){
+    boolean checkDowngradeCommandFormat(List<String> items) {
+
+        if (items.size() == 2) {
 
             try {
-                     
+
                 int result = Integer.parseInt(items.get(1));
                 return true;
-          
-                
-                
+
             } catch (Exception e) {
                 return false;
             }
@@ -185,14 +174,13 @@ public class HexBaron {
     }
 
     //888888888888888888888888888888888888888
-    
     //Task 10
-    boolean checkSalvageCommandFormat(List<String> items){
-    
-      if(items.size() == 2){
+    boolean checkSalvageCommandFormat(List<String> items) {
+
+        if (items.size() == 2) {
 
             try {
-                     
+
                 int result = Integer.parseInt(items.get(1));
                 return true;
 
@@ -204,14 +192,6 @@ public class HexBaron {
         return false;
     }
     //100000000000000000000000000000000000000000000000000000000
-    
-    
-    
-    
-    
-    
-    
-    
 
     boolean checkCommandIsValid(List<String> items) {
         if (items.size() > 0) {
@@ -231,10 +211,10 @@ public class HexBaron {
                 case "upgrade":
 
                     return checkUpgradeCommandFormat(items);
-                    
+
                 case "downgrade":                                    //Task 8
                     return checkDowngradeCommandFormat(items);
-                    
+
                 case "salvage":                                     //task 10
                     return checkSalvageCommandFormat(items);
             }
@@ -309,49 +289,57 @@ public class HexBaron {
 
             //---------------------------------------------------------
             for (int count = 0; count < 3; count++) {
-
                 List<String> items = Arrays.asList(commands.get(count).split(" "));
                 validCommand = checkCommandIsValid(items);
 
-                
                 OUTER:
-                
                 if (!validCommand) {
-                    Console.writeLine("Command "+ (count+1)+": Is an invalid command");
+                    Console.writeLine("Command " + (count + 1) + ": Is an invalid command");
 
                     //task 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 
-
-                    if(player1Turn && player1.Chances > 0){
-                        Console.write("Reenter command number "+(1+count)+": ");
-
-                        String stringCommand = Console.readLine();
-                        strip(stringCommand);
-
-                        commands.remove(count);
-                        commands.add(count, stringCommand);
-
-                        player1.removeChance();
-
-                        Console.write("you have " + player1.Chances + " chances left");
-                        System.out.println("");
-                    }else if (!player1Turn && player2.Chances > 0){
-                        Console.write("Reenter command number "+(1+count)+": ");
+                    if (player1Turn && player1.Chances > 0) {
+                        Console.write("Reenter command number " + (1 + count) + ": ");
 
                         String stringCommand = Console.readLine();
                         strip(stringCommand);
 
-                        commands.remove(count);
-                        commands.add(count, stringCommand);
+                        if (stringCommand.equals("hexes")) {
+                            System.out.println(grid.getGridAsIndicies());
 
-                        player2.removeChance();
+                        } else {
+                            commands.remove(count);
+                            commands.add(count, stringCommand);
 
-                        Console.write("you have " + player2.Chances + " chances left");
-                        System.out.println("");
+                            player1.removeChance();
+
+                            Console.write("you have " + player1.Chances + " chances left");
+                            System.out.println("");
+                        }
+                        count--;
+
+                    } else if (!player1Turn && player2.Chances > 0) {
+                        Console.write("Reenter command number " + (1 + count) + ": ");
+
+                        String stringCommand = Console.readLine();
+                        strip(stringCommand);
+
+                        if (stringCommand.equals("hexes")) {
+                            System.out.println(grid.getGridAsIndicies());
+
+                        } else {
+                            commands.remove(count);
+                            commands.add(count, stringCommand);
+
+                            player2.removeChance();
+
+                            Console.write("you have " + player2.Chances + " chances left");
+                            System.out.println("");
+                        }
+
+                        count--;
                     }
 
-                    count--;
-                    //11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11
-                  
+                    //11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 
                 } else {
                     int fuelChange = 0;
                     int lumberChange = 0;
@@ -371,39 +359,39 @@ public class HexBaron {
                         if (supplyChange == 1) {
                             player1.removeTileFromSupply();
                         }
-                        
-                           
-                         //Task 10
-                        
-                        if(supplyChange == -1){
-                        player1.AddPiecesInSupply(1);
-                        }
-                        //1000000000000000000000000000000000
 
-                        
-                        
-                        //Task 11 
-                        
-                        if(!summaryOfResult.equals("Command execeuted") && player1.Chances > 0){
-                           Console.write("Enter command number " +(1 + count) + ": ");
-                        
+                        //task 10
+                        if (supplyChange == -1) {
+                            player1.AddPiecesInSupply(1);
+                        }
+
+                        //task 11
+                        if (!summaryOfResult.equals("Command executed") && player1.Chances > 0) {
+
+                            Console.writeLine(summaryOfResult);
+
+                            Console.write("Reenter command number " + (1 + count) + ": ");
+
                             String stringCommand = Console.readLine();
                             strip(stringCommand);
-                        
-                            commands.remove(count);
-                            commands.add(count, stringCommand);
-                      
-                      
-                            player1.removeChance();
-                            
-                            System.out.println("you have " + player1.Chances + " chances left" );
-                            
+
+                            if (stringCommand.equals("hexes")) {
+                                System.out.println(grid.getGridAsIndicies());
+
+                            } else {
+                                commands.remove(count);
+                                commands.add(count, stringCommand);
+
+                                player1.removeChance();
+
+                                Console.write("you have " + player1.Chances + " chances left");
+                                System.out.println("");
+                            }
+
                             count--;
-                            
                             break OUTER;
-                         }
-//  11 11 11 11 11 11 11 11 11 11 11 
-                        
+                        }
+
                     } else {
                         returnObjects = grid.executeCommand(items, fuelChange, lumberChange, supplyChange,
                                 player2.getFuel(), player2.getLumber(),
@@ -417,50 +405,44 @@ public class HexBaron {
                         if (supplyChange == 1) {
                             player2.removeTileFromSupply();
                         }
-                        
-                         
-                        //Task 10
-                        
-                        if(supplyChange == -1){
-                        player2.AddPiecesInSupply(1);
+
+                        //task 10
+                        if (supplyChange == -1) {
+                            player2.AddPiecesInSupply(1);
                         }
-                        
-                        //1000000000000000000000000000000000
-                        
-                        
-                        
-                        
-                        //Task 11
-                         if(!summaryOfResult.equals("Command execeuted")  && player2.Chances > 0){
-                           
-                             Console.writeLine(summaryOfResult);
-                             
-                             Console.write("Enter command number " +(1 + count) + ": ");
-                        
+
+                        //task 11
+                        if (!summaryOfResult.equals("Command executed") && player2.Chances > 0) {
+
+                            Console.writeLine(summaryOfResult);
+
+                            Console.write("Reenter command number " + (1 + count) + ": ");
+
                             String stringCommand = Console.readLine();
                             strip(stringCommand);
-                        
+                            
+                            
+                        if (stringCommand.equals("hexes")) {
+                            System.out.println(grid.getGridAsIndicies());
+
+                        } else {
                             commands.remove(count);
                             commands.add(count, stringCommand);
-                      
-                      
+
                             player2.removeChance();
-                            
-                            System.out.println("you have " + player2.Chances + " chances left" );
-                            
+
+                            Console.write("you have " + player2.Chances + " chances left");
+                            System.out.println("");
+                        }
+
                             count--;
-                            
+
                             break OUTER;
-                         }
-                            
-                    
+                        }
                     }
                     Console.writeLine(summaryOfResult);
-                    
-                 
-                    
+
                 }
-                
             }
 
             //---------------------------------------------------------
@@ -470,34 +452,33 @@ public class HexBaron {
 
                 List<String> items = Arrays.asList(c.split(" "));
                 validCommand = checkCommandIsValid(items);
-                
+
                 if (validCommand) {
                     valid++;
                 }
 
                 if (valid == 3) {
-                    
+
                     boolean consecutive = false;
-                    
-                    if (commands.get(0).equals(commands.get(1)) && commands.get(0).equals(commands.get(2) )) {
+
+                    if (commands.get(0).equals(commands.get(1)) && commands.get(0).equals(commands.get(2))) {
                         consecutive = true;
                     }
 
                     if (consecutive) {
-                        
-                     
+
                         if (player1Turn == true && commands.get(0).contains("dig")) {
                             player1.updateFuel(2);
                             grid.makeField(items);
                         } else if (player1Turn == false && commands.get(0).contains("dig")) {
                             player2.updateFuel(2);
-                                  grid.makeField(items);
+                            grid.makeField(items);
                         } else if (player1Turn == true && commands.get(0).contains("saw")) {
                             player1.updateLumber(2);
-                                  grid.makeField(items);
+                            grid.makeField(items);
                         } else if (player1Turn == false && commands.get(0).contains("saw")) {
                             player2.updateLumber(2);
-                                  grid.makeField(items);
+                            grid.makeField(items);
                         }
 
                     }
