@@ -118,11 +118,21 @@ public class HexBaron {
 
     boolean checkStandardCommandFormat(List<String> items) {
         int result;
-        if (items.size() == 2) {
+        if (items.size() == 2 || items.size() == 3) {
             try {
                 result = Integer.parseInt(items.get(1));
-            } catch (Exception e) {
+                
+            } 
+            catch (Exception e) {
+                
+                try{
+                result = Integer.parseInt(items.get(2));
+                return true;
+                }
+                catch(Exception d){   
                 return false;
+                }
+  
             }
             return true;
         }

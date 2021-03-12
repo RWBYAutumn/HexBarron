@@ -280,9 +280,62 @@ public class HexGrid {
     }
 
     private int executeSpawnCommand(List<String> items, int lumberAvailable, int piecesInSupply) {
-        int playerPieces = 0;
+        
+        int tileToUse;
+       int playerPieces = 0;
+       
+        if(items.size() == 3){
+            tileToUse = Integer.parseInt(items.get(2));
+            
 
-        int tileToUse = Integer.parseInt(items.get(1));
+        if (piecesInSupply < 1 || lumberAvailable < 10 || !checkTileIndexIsValid(tileToUse)) {
+            return -1;
+        }
+        Piece thePiece = tiles.get(tileToUse).getPieceInTile();
+        if (thePiece != null) {
+            return -1;
+        }
+        boolean ownBaronIsNeighbour = false;
+        List<Tile> listOfNeighbours = new ArrayList<>(tiles.get(tileToUse).getNeighbours());
+        for (Tile n : listOfNeighbours) {
+            thePiece = n.getPieceInTile();
+            if (thePiece != null) {
+                if (player1Turn && thePiece.getPieceType().equals("B") || !player1Turn && thePiece.getPieceType().equals("b")) {
+                    ownBaronIsNeighbour = true;
+                    break;
+                }
+            }
+        }
+
+        if (!ownBaronIsNeighbour) {
+            return -1;
+        }
+
+        //Task 4 making sure the player can only have 6 pieces on the board at a time
+        if (!ownBaronIsNeighbour) {
+            return -1;
+        }
+        for (Piece p : pieces) {
+            if (p.getBelongsToplayer1() == player1Turn) {
+                playerPieces += 1;
+            }
+        }
+        if (playerPieces >= 6) {
+            Console.writeLine("Spawn attempted to exceed max pieces.");
+            return -1;
+        }
+
+        Piece newPiece = new BOMBPiece(player1Turn);
+        pieces.add(newPiece);
+
+        tiles.get(tileToUse).setPiece(newPiece);
+        return 10;
+        
+            
+       }
+        else{
+        
+        tileToUse = Integer.parseInt(items.get(1));
         if (piecesInSupply < 1 || lumberAvailable < 3 || !checkTileIndexIsValid(tileToUse)) {
             return -1;
         }
@@ -324,7 +377,10 @@ public class HexGrid {
         pieces.add(newPiece);
 
         tiles.get(tileToUse).setPiece(newPiece);
+        
         return 3;
+        }
+         
     }
 
     private int executeUpgradeCommand(List<String> items, int lumberAvailable) {
